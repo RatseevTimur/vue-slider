@@ -44,10 +44,6 @@ export default {
     slideItems: {
       type: Array,
       default: () => []
-    },
-    interval: {
-      type: Number,
-      default: 0
     }
   },
   data(){
@@ -56,21 +52,34 @@ export default {
       width: window.innerWidth,
       slideCycle: this.slideCycl(),
       visibleSlides: this.numberVisible(window.innerWidth),
-      progress: "0%"
+      progress: "0%",
+      interval: 4000,
+      x: null
     }
   },
   methods:{
     left(){
+      let vm = this
       if(this.slideIndex > 0){
         this.slideIndex--
       }
+      clearTimeout(this.intervalVariable);
+      this.intervalVariable = setInterval ( function() {
+        vm.right()
+      }, 4000)
+      this.updateProgressIndicator()
     },
     right(){
+      let vm = this
       if(this.slideIndex === this.slideCycle ){
         this.slideIndex = 0
       }else{
         this.slideIndex++
       }
+      clearTimeout(this.intervalVariable)
+      this.intervalVariable = setInterval ( function() {
+        vm.right()
+      }, 4000)
       this.updateProgressIndicator()
     },
     updateProgressIndicator() {
@@ -84,6 +93,7 @@ export default {
       this.width = window.innerWidth
       this.visibleSlides = this.numberVisible(window.innerWidth);
       this.slideCycle = this.slideCycl()
+      this.updateProgressIndicator()
     },
     slideCycl(){
       return Math.ceil((this.slideItems.length/this.visibleSlides)-1)
@@ -107,7 +117,7 @@ export default {
   mounted(){
     if (this.interval > 0) {
       let vm = this; 
-      setInterval ( function() {
+      this.intervalVariable = setInterval ( function() {
         vm.right()
       }, vm.interval)
     }
@@ -116,6 +126,8 @@ export default {
     })
 
     this.slideCycle = this.slideCycl()
+
+    
   },
   beforeDestroy() { 
     window.removeEventListener('resize', this.onResize); 
@@ -159,12 +171,12 @@ $vue-green: #527CCD;
 }
 
 .wrapper{
-  max-width: (240px+40px+20px) * 4;
+  max-width: (((240px+40px+20px)*4)-10px);
   overflow: hidden;
-  margin: 0 auto;
-  /*position: absolute;*/
-  top: 20%;
-  left: 5%;
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 .v-carousel{
   display: flex;

@@ -2,7 +2,6 @@
   <div id="app">
     <v-carousel
     :slideItems="slideItems"
-    :interval="4000"
     />
   </div>
 </template>
